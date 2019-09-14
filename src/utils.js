@@ -3,6 +3,7 @@ require("dotenv").config();
 import { adjectives, nonces } from "./word";
 import nodemailer from "nodemailer";
 import sgTransport from "nodemailer-sendgrid-transport";
+import jwt from "jsonwebtoken";
 
 // 사용자 Secret key 생성
 export const generateSecret = () => {
@@ -31,3 +32,5 @@ export const sendSecretMail = (address, secret) => {
   };
   return sendMail(email);
 };
+
+export const generateToken = id => jwt.sign({ id }, process.env.JWT_SECRET);
