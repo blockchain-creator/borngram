@@ -1,5 +1,5 @@
-import { prisma } from "../../../generated/prisma-client";
-import { ROOM_FRAGMENT } from "../../fragments";
+import { prisma } from "../../../../generated/prisma-client";
+import { ROOM_FRAGMENT } from "../../../fragments";
 
 export default {
   Mutation: {
@@ -7,6 +7,7 @@ export default {
       isAuthenticated(request);
       const { user } = request;
       const { roomId, message, toId } = args;
+      console.log(roomId , message, toId);
       let room;
       if (roomId === undefined) {
         if (user.id !== toId) {
@@ -20,13 +21,15 @@ export default {
         }
       } else {
         room = await prisma.room({ id: roomId }).$fragment(ROOM_FRAGMENT);
+        console.log(room);
       }
       if (!room) {
         throw Error("채팅방이 존재 하지 않습니다.");
       }
-      const getTo = room.participants.map(
+      const getTo = room.participants.filter(
         participant => participant.id !== user.id
       )[0];
+      console.log("getTo ====> ", getTo.id);
       const newMessage = await prisma.createMessage({
         text: message,
         from: {
